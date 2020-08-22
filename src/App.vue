@@ -4,7 +4,7 @@
     :class="{app_local:$store.state.localApiHost && (!$store.state.user.pid || $store.state.user.pid == $store.state.user.localPid)?true:false}"
   >
     <div class="router_view">
-      <router-view />
+      <router-view/>
     </div>
     <div class="foot">
       <font>@2020 版权所有 深圳市玩物科技有限公司</font>
@@ -26,11 +26,12 @@
 </template>
 
 <script>
-  import Jdb from "@/components/Jdb.vue";
-  import Req from "./req";
-  import { mapActions } from "vuex";
+  import Jdb from '@/components/Jdb.vue';
+  import Req from './req';
+  import { mapActions } from 'vuex';
+
   export default {
-    data: function() {
+    data: function () {
       return {
         isShowNotice: false
       };
@@ -40,35 +41,36 @@
     },
     methods: {
       ...mapActions([
-        "getLogin",
-        "checkLogin",
-        "getBoxList",
-        "getLanDevices",
-        "postBoxBind",
-        "postUserDevices",
-        "updateLocalApiHost",
-        "getSysInfo",
-        "hideLoading",
-        "getRptAgree",
-        "getRptAgreeWithPid",
-        "sendUserLog",
-        "getDevStatus"
+        'getLogin',
+        'checkLogin',
+        'getBoxList',
+        'getLanDevices',
+        'postBoxBind',
+        'postUserDevices',
+        'updateLocalApiHost',
+        'getSysInfo',
+        'hideLoading',
+        'getRptAgree',
+        'getRptAgreeWithPid',
+        'sendUserLog',
+        'getDevStatus'
       ]),
-      initRouter: function() {
+      initRouter: function () {
         let _that = this;
-        _that.sendUserLog(["open", window.location.href]);
+        _that.sendUserLog(['open', window.location.href]);
         let code = _that.$route.query.code;
         if (code) {
           _that.$store.state.isShowLoading = true;
-          let buid = localStorage.getItem("buid");
-          buid = buid ? buid : "";
+          let buid = localStorage.getItem('buid');
+          buid = buid ? buid : '';
           let tuid = buid;
-          let appid = localStorage.getItem("appid");
-          appid = appid ? appid : "";
-          let chanid = localStorage.getItem("chanid");
-          chanid = chanid ? chanid : "";
-          let refuid = localStorage.getItem("refuid");
-          refuid = refuid ? refuid : "";
+          let appid = localStorage.getItem('appid');
+          appid = appid ? appid : '';
+          let chanid = localStorage.getItem('chanid');
+          chanid = chanid ? chanid : '';
+          let refuid = localStorage.getItem('refuid');
+          refuid = refuid ? refuid : '';
+
           _that.getLogin([
             code,
             tuid,
@@ -76,7 +78,7 @@
             appid,
             chanid,
             refuid,
-            function(err, data) {
+            function (err, data) {
               // console.log("login");
               // console.log(data);
               _that.$store.state.isShowLoading = false;
@@ -95,13 +97,13 @@
               // }
 
               if (err || data.rtn) {
-                _that.$store.state.alertToast.type = "error";
+                _that.$store.state.alertToast.type = 'error';
                 _that.$store.state.alertToast.text =
-                  "登陆失败，请重试";
+                  '登陆失败，请重试';
               }
 
               window.location.replace(
-                window.location.href.split("?")[0]
+                window.location.href.split('?')[0]
               );
             }
           ]);
@@ -113,30 +115,30 @@
         let ip = _that.$route.query.ip;
         if (ip) {
           _that.$route.query.host = encodeURIComponent(
-            "http://" + ip + ":8283"
+            'http://' + ip + ':8283'
           );
         }
         let host = _that.$route.query.host
           ? _that.$route.query.host
-          : localStorage.getItem("owdl-host");
+          : localStorage.getItem('owdl-host');
         if (host) {
           host = decodeURIComponent(host);
           // _that.$store.state.user.pid = pid;
           _that.updateLocalApiHost([host]);
-          _that.$store.state.mode = "local";
+          _that.$store.state.mode = 'local';
           // localStorage.setItem("owdl-pid", pid);
-          localStorage.setItem("owdl-host", host);
+          localStorage.setItem('owdl-host', host);
         }
 
         let from = _that.$route.query.from
           ? _that.$route.query.from
-          : localStorage.getItem("owdl-from");
+          : localStorage.getItem('owdl-from');
         if (from) {
           _that.$store.state.user.from = from;
-          localStorage.setItem("owdl-from", from);
+          localStorage.setItem('owdl-from', from);
         }
       },
-      initPid: function() {
+      initPid: function () {
         let _that = this;
 
         if (
@@ -146,7 +148,7 @@
         ) {
           // console.log("----------1---------");
           _that.getBoxList([
-            function(err, data) {
+            function (err, data) {
               // console.log("----------11---------");
               if (!err && data.info.length > 0) {
                 // console.log("----------111---------");
@@ -170,7 +172,7 @@
 
                 _that.getDevStatus([
                   _that.$store.state.user.pid,
-                  function(err, data) {
+                  function (err, data) {
                     // console.log(data);
                     if (!err && data) {
                       _that.$store.state.user.owappStatus =
@@ -178,37 +180,37 @@
                     }
                     if (
                       _that.$store.state.user.devStatus ==
-                      "off" &&
+                      'off' &&
                       _that.$store.state.user.owappStatus ==
-                      "off"
+                      'off'
                     ) {
                       _that.$store.state.isShowOffline = true;
                       _that.$store.state.isOffline = true;
                     } else {
-                      _that.$store.state.mode = "remote";
+                      _that.$store.state.mode = 'remote';
                     }
                   }
                 ]);
               }
               // console.log(_that.$store.state.user);
-              localStorage.setItem("owdl-host", "");
+              localStorage.setItem('owdl-host', '');
               _that.checkMode();
             }
           ]);
         } else if (_that.$store.state.localApiHost) {
           // console.log("=========getSysInfo==========");
-          _that.getLocalPid(function(err, data) {
+          _that.getLocalPid(function (err, data) {
             if (!err) {
               _that.$store.state.user.localDevName = data.dn
                 ? data.dn
-                : "";
+                : '';
               _that.$store.state.user.localDevAddr = _that.$store.state.localApiHost.split(
-                "//"
+                '//'
               )[1];
               if (_that.$store.state.isLogin) {
                 // console.log("isLogin");
                 _that.getBoxList([
-                  function(err, data) {
+                  function (err, data) {
                     if (err) {
                       return;
                     }
@@ -235,14 +237,14 @@
                     } else {
                       if (!isBind && data.info.length > 0) {
                         _that.$store.state.alertToast.type =
-                          "error";
+                          'error';
                         _that.$store.state.alertToast.text =
-                          "您已经绑定了一台设备";
+                          '您已经绑定了一台设备';
                       }
                       if (data.info.length > 0) {
                         localStorage.setItem(
-                          "owdl-host",
-                          ""
+                          'owdl-host',
+                          ''
                         );
                         _that.$store.state.user.pid =
                           data.info[0].pid;
@@ -268,7 +270,7 @@
 
                         _that.getDevStatus([
                           _that.$store.state.user.pid,
-                          function(err, data) {
+                          function (err, data) {
                             // console.log(data);
                             if (!err && data) {
                               _that.$store.state.user.owappStatus =
@@ -277,10 +279,10 @@
                             if (
                               _that.$store.state.user
                                 .devStatus ==
-                              "off" &&
+                              'off' &&
                               _that.$store.state.user
                                 .owappStatus ==
-                              "off"
+                              'off'
                             ) {
                               _that.$store.state.isShowOffline = true;
                               _that.$store.state.isOffline = true;
@@ -302,7 +304,7 @@
                               }
                             } else {
                               _that.$store.state.mode =
-                                "remote";
+                                'remote';
                             }
                           }
                         ]);
@@ -316,19 +318,19 @@
               }
             } else {
               // console.log("========getSysInfo error=========");
-              _that.sendUserLog(["getSysInfo", JSON.stringify(err)]);
-              localStorage.setItem("owdl-host", "");
+              _that.sendUserLog(['getSysInfo', JSON.stringify(err)]);
+              localStorage.setItem('owdl-host', '');
               // _that.$store.state.alertError.text = "下载程序错误，请您尝试重启或重装套件";
               // _that.checkMode();
               // return;
-              window.location.replace("/");
+              window.location.replace('/');
             }
           });
         } else {
           _that.checkMode();
         }
       },
-      checkMode: function() {
+      checkMode: function () {
         // console.log("--------2------");
         let _that = this;
         if (_that.$store.state.user.pid) {
@@ -337,7 +339,7 @@
         // console.log("--------22------");
         if (_that.$store.state.isLogin) {
           _that.$store.state.alertError.text =
-            "首次绑定，请到本地套件中心打开玩物下载";
+            '首次绑定，请到本地套件中心打开玩物下载';
         } else {
           _that.$store.state.isShowLogin = true;
         }
@@ -414,27 +416,27 @@
         // 	}
         // ]);
       },
-      getLocalPid: function(cb) {
+      getLocalPid: function (cb) {
         let _that = this;
         _that.$store.state.isShowLoading = true;
         _that.getSysInfo([
-          function(err, data) {
+          function (err, data) {
             // err = true;
             if (err) {
               // 访问不了清除host
-              localStorage.setItem("owdl-host", "");
+              localStorage.setItem('owdl-host', '');
 
-              _that.sendUserLog(["getSysInfo", JSON.stringify(err)]);
+              _that.sendUserLog(['getSysInfo', JSON.stringify(err)]);
               _that.getLanDevices([
-                function(err, data) {
+                function (err, data) {
                   _that.$store.state.isShowLoading = false;
                   _that.sendUserLog([
-                    "getLanDevices",
+                    'getLanDevices',
                     JSON.stringify(data)
                   ]);
                   if (!err && data.data) {
                     let locPids = data.data;
-                    let pid = "";
+                    let pid = '';
                     let pids = [];
                     for (
                       let index = 0;
@@ -444,7 +446,7 @@
                       let item = locPids[index];
                       if (
                         item.pid &&
-                        item.lanip.indexOf("8283") > -1
+                        item.lanip.indexOf('8283') > -1
                       ) {
                         pids.push(item.pid);
                         if (
@@ -463,7 +465,7 @@
                     // console.log("*******", pid);
                     _that.$store.state.user.pid = pid;
                     _that.$store.state.user.localPid = pid;
-                    _that.sendUserLog(["getLanDevices", pid]);
+                    _that.sendUserLog(['getLanDevices', pid]);
                     if (pid) {
                       cb ? cb(null, { pid: pid }) : null;
                     } else {
@@ -476,26 +478,26 @@
               ]);
             } else {
               _that.$store.state.isShowLoading = false;
-              _that.sendUserLog(["getSysInfo", JSON.stringify(data)]);
+              _that.sendUserLog(['getSysInfo', JSON.stringify(data)]);
               cb ? cb(err, data) : null;
             }
           }
         ]);
       },
-      showNoticeOnly: function() {
+      showNoticeOnly: function () {
         this.$store.state.isShowNoticeOnly = true;
       },
-      hideNoticeOnly: function() {
+      hideNoticeOnly: function () {
         this.$store.state.isShowNoticeOnly = false;
       },
-      checkNoticeOnly: function(pid) {
+      checkNoticeOnly: function (pid) {
         let _that = this;
         if (!pid) {
           return;
         }
         _that.getRptAgreeWithPid([
           pid,
-          function(err, data) {
+          function (err, data) {
             _that.hideLoading();
             if (!err) {
               // console.log(data);
@@ -510,20 +512,21 @@
           }
         ]);
       },
-      onNoticeAgree: function() {},
-      showNotice: function() {
+      onNoticeAgree: function () {
+      },
+      showNotice: function () {
         this.$store.state.isShowNotice = true;
       },
-      hideNotice: function() {
+      hideNotice: function () {
         this.$store.state.isShowNotice = false;
       },
-      checkNotice: function(cb) {
+      checkNotice: function (cb) {
         let _that = this;
         if (!_that.$store.state.user.pid) {
           return;
         }
         _that.getRptAgree([
-          function(err, data) {
+          function (err, data) {
             _that.hideLoading();
             if (!err) {
               // console.log(data);
@@ -533,32 +536,32 @@
                   if (_that.$store.state.isLogin) {
                     _that.postUserDevices([
                       _that.$store.state.user.pid,
-                      function(err, data) {
+                      function (err, data) {
                         if (!err && !data.rtn) {
                           _that.$store.state.alertToast.type =
-                            "success";
+                            'success';
                           _that.$store.state.alertToast.text =
-                            "设备绑定成功";
+                            '设备绑定成功';
                         } else if (
                           !err &&
                           data.rtn == 10115
                         ) {
                           _that.$store.state.alertError.text =
-                            "首次绑定，请到本地套件中心打开玩物下载";
+                            '首次绑定，请到本地套件中心打开玩物下载';
                         } else if (
                           !err &&
                           data.rtn == 311
                         ) {
                           _that.$store.state.alertError.text =
-                            "绑定失败，设备不在线";
+                            '绑定失败，设备不在线';
                         } else {
                           _that.$store.state.alertError.text =
-                            "该设备已被其他用户绑定";
+                            '该设备已被其他用户绑定';
                         }
 
                         localStorage.setItem(
-                          "owdl-host",
-                          ""
+                          'owdl-host',
+                          ''
                         );
                       }
                     ]);
@@ -570,14 +573,31 @@
             }
           }
         ]);
+      },
+      fuckIOneWu() {
+        console.log('process', process.env.VUE_APP_OWDL_OWCODE);
+        localStorage.setItem('owdl-uid', process.env.VUE_APP_OWDL_UID);
+        localStorage.setItem('owdl-openid', process.env.VUE_APP_OWDL_OPENID);
+        localStorage.setItem('owdl-name', process.env.VUE_APP_OWDL_NAME);
+        localStorage.setItem('owdl-avatar', process.env.VUE_APP_OWDL_AVATAR);
+        localStorage.setItem('owdl-rkey', process.env.VUE_APP_OWDL_RKEY);
+        localStorage.setItem('owdl-owcode', process.env.VUE_APP_OWDL_OWCODE);
       }
+
     },
-    beforeMount: function() {},
-    mounted: function() {
+    beforeMount: function () {
+    },
+
+    mounted: function () {
       let _that = this;
-      _that.checkLogin([function() {}]);
+      _that.fuckIOneWu();
+      // /*
+      _that.checkLogin([function () {
+      }]);
       _that.initRouter();
       _that.initPid();
+
+       // */
     }
   };
 </script>
@@ -640,13 +660,16 @@
     text-align: center;
     width: 100%;
     font-size: 12px;
+
     font {
       margin-right: 10px;
     }
+
     a {
       color: #ffffff;
       margin-right: 10px;
     }
+
     .gongan {
       /*background-image: url(./assets/ga_icon.png);*/
       background-position: left center;
