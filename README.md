@@ -1,6 +1,6 @@
-#迅雷爱玩物 vue 版本 
+# 迅雷爱玩物 vue 版本 
 
-## 目的
+## 为什么是它
 入手黑群晖半年多了，用了 aria2,transmission,ionewu，最后还是吸血雷好，什么链接往里面丢就好。
 
 现在最大的问题:
@@ -9,14 +9,14 @@
 
 但是总得来说，还是爱玩物最稳定。
 
-## 怎么来的
+## 代码哪里来的
 一开始我是在console里单步调试，就好像盲人一样的走路，list api有跑起来，到 info的时候，由于不知道proto的存在，不知道是 bufferArray，所以总是乱码。
 
 随着项目的的深入了解，我发现已经有源代码在 webpack里，在 chrome web store 找了个插件，Save All Resources。
 
 从源网页抄些配置，env里的那些，然后就可以跑起来了。
 
-这个仓库，作为源代码。目前，我正在用 express 改装 这个项目。
+这个仓库，作为源代码。
 
 ## 如何食用
 ```
@@ -34,7 +34,12 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## 源代码大致
 * vuex.store 被作为数据库使用，刷新的时候，从 localStorage 取最核心的数据。
-* setInterval 各种跑，尤其是 list 接口，来保证 vuex.store 是正确切实时的。
+* vue.store 的 action 被 map 到页面vue，
+
+比如 add.vue 页点击添加，就触发postTaskNew，异步更改 vuex.store 数据。
+
+更改过程同时会有一些 dispatch 来维护列表的数据显示
+* setInterval 各种跑，尤其是 list 接口，来保证 vuex.store里的数据是正确且实时的。
 
 
 ## 然后呢
